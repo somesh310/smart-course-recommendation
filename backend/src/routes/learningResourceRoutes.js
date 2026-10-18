@@ -1,0 +1,24 @@
+import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
+import { createLearningRequest, createResource, deleteResource, getVideoProgress, listAdminResources, listMyNotifications, listMyRequests, listRequests, listResources, markMyNotificationsRead, recordPlayback, updateRequest, updateResource } from '../controllers/learningResourceController.js';
+import { requireAuth, requireRole } from '../middleware/authMiddleware.js';
+import { validateRequest } from '../middleware/validateRequest.js';
+import { learningRequestSchema, playbackParamSchema, playbackSchema, requestQuerySchema, requestUpdateSchema, resourceIdSchema, resourceQuerySchema, resourceSchema } from '../validators/resourceValidators.js';
+
+const router = Router();
+const playbackLimit = rateLimit({ windowMs: 60 * 1000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, message: { success: false, message: 'Playback updates are arriving too quickly.', errors: [] } });
+const requestLimit = rateLimit({ windowMs: 15 * 60 * 1000, limit: 5, standardHeaders: 'draft-7', legacyHeaders: false, message: { success: false, message: 'Too many learning requests. Try again later.', errors: [] } });
+router.get('/resources', validateRequest(resourceQuerySchema, 'query'), listResources);
+router.get('/progress/:resourceId', requireAuth, validateRequest(playbackParamSchema, 'params'), getVideoProgress);
+router.post('/progress', playbackLimit, requireAuth, validateRequest(playbackSchema), recordPlayback);
+router.post('/requests', requestLimit, requireAuth, validateRequest(learningRequestSchema), createLearningRequest);
+router.get('/requests/mine', requireAuth, listMyRequests);
+router.get('/notifications', requireAuth, listMyNotifications);
+router.patch('/notifications/read', requireAuth, markMyNotificationsRead);
+router.get('/admin/resources', requireAuth, requireRole('admin'), validateRequest(requestQuerySchema, 'query'), listAdminResources);
+router.get('/admin/requests', requireAuth, requireRole('admin'), validateRequest(requestQuerySchema, 'query'), listRequests);
+router.patch('/admin/requests/:id', requireAuth, requireRole('admin'), validateRequest(resourceIdSchema, 'params'), validateRequest(requestUpdateSchema), updateRequest);
+router.post('/admin/resources', requireAuth, requireRole('admin'), validateRequest(resourceSchema), createResource);
+router.put('/admin/resources/:id', requireAuth, requireRole('admin'), validateRequest(resourceIdSchema, 'params'), validateRequest(resourceSchema), updateResource);
+router.delete('/admin/resources/:id', requireAuth, requireRole('admin'), validateRequest(resourceIdSchema, 'params'), deleteResource);
+export default router;

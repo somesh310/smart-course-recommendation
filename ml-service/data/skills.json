@@ -1,0 +1,68 @@
+{
+  "skills": {
+    "python": {
+      "name": "Python",
+      "aliases": ["python programming", "python3"]
+    },
+    "numpy": {
+      "name": "NumPy",
+      "aliases": ["numerical python"]
+    },
+    "pandas": {
+      "name": "Pandas",
+      "aliases": ["python pandas", "data manipulation"]
+    },
+    "statistics": {
+      "name": "Statistics",
+      "aliases": ["statistical analysis"]
+    },
+    "machine-learning": {
+      "name": "Machine Learning",
+      "aliases": ["ml", "machine learning"]
+    },
+    "deep-learning": {
+      "name": "Deep Learning",
+      "aliases": ["dl", "neural networks"]
+    },
+    "model-evaluation": {
+      "name": "Model Evaluation",
+      "aliases": ["model testing", "model validation"]
+    },
+    "deployment": {
+      "name": "Deployment",
+      "aliases": ["model deployment", "application deployment"]
+    },
+    "sql": {
+      "name": "SQL",
+      "aliases": ["mysql", "structured query language"]
+    },
+    "excel": {
+      "name": "Excel",
+      "aliases": ["microsoft excel", "ms excel"]
+    },
+    "data-visualization": {
+      "name": "Data Visualization",
+      "aliases": ["data visualization", "data viz"]
+    },
+    "power-bi": {
+      "name": "Power BI",
+      "aliases": ["powerbi", "microsoft power bi"]
+    },
+    "apis": {
+      "name": "API Development",
+      "aliases": ["rest api", "rest apis", "api development"]
+    },
+    "git": {
+      "name": "Git",
+      "aliases": ["version control"]
+    },
+    "authentication": {
+      "name": "Authentication",
+      "aliases": ["jwt authentication", "user authentication"]
+    },
+    "testing": {
+      "name": "Software Testing",
+      "aliases": ["unit testing", "api testing"]
+    }
+  }
+}

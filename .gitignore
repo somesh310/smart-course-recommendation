@@ -1,0 +1,32 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Node.js dependencies
+node_modules/
+
+# Python environments and cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Build output
+dist/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Nested environment files
+backend/.env
+ml-service/.env
+
+# Python virtual environments
+ml-service/.venv/
+ml-service/main.py.backup
+ml-service/main.py.backup

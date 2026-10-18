@@ -1,0 +1,1 @@
+export default function Footer(){return <footer style={{padding:'28px 0',borderTop:'1px solid #e9ecf3',color:'#778198',fontSize:13}}><div className="container" style={{display:'flex',justifyContent:'space-between',gap:12,flexWrap:'wrap'}}><span>© 2026 Pathwise · Learn with direction.</span><span>Student accounts · TF-IDF course recommendations</span></div></footer>}

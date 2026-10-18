@@ -1,0 +1,1 @@
+export default function EmptyState({title='Nothing here yet',text='Try adjusting your filters.'}){return <div className="card" style={{padding:40,textAlign:'center'}}><h3>{title}</h3><p className="muted">{text}</p></div>}

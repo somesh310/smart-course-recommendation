@@ -1,0 +1,15 @@
+{
+  "prerequisites": {
+    "numpy": ["python"],
+    "pandas": ["python", "numpy"],
+    "machine-learning": ["python", "numpy", "pandas", "statistics"],
+    "deep-learning": ["python", "numpy", "machine-learning"],
+    "model-evaluation": ["statistics", "machine-learning"],
+    "deployment": ["python", "git"],
+    "data-visualization": ["pandas"],
+    "power-bi": ["excel", "data-visualization"],
+    "apis": ["python", "git"],
+    "authentication": ["apis"],
+    "testing": ["python", "git"]
+  }
+}

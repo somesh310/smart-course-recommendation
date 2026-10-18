@@ -1,0 +1,1 @@
+export const APP_NAME='Pathwise'; export const CATEGORIES=['Python','NumPy & Pandas','Data Analysis','Machine Learning','Deep Learning','NLP','Generative AI','Web Development','Cloud Computing','Cybersecurity'];

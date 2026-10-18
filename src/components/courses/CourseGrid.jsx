@@ -1,0 +1,1 @@
+import CourseCard from './CourseCard';import EmptyState from '../common/EmptyState';export default function CourseGrid({courses}){return courses.length?<div className="grid-courses">{courses.map(c=><CourseCard key={c.id} course={c}/>)}</div>:<EmptyState title="No courses found" text="Try another search or reset your filters."/>}

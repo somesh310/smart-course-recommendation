@@ -1,0 +1,43 @@
+{
+  "careers": {
+    "ai-ml-engineer": {
+      "name": "AI/ML Engineer",
+      "description": "Build, evaluate and deploy machine learning solutions.",
+      "skills": [
+        {"skill_id": "python", "weight": 3},
+        {"skill_id": "numpy", "weight": 1},
+        {"skill_id": "pandas", "weight": 1},
+        {"skill_id": "statistics", "weight": 2},
+        {"skill_id": "machine-learning", "weight": 3},
+        {"skill_id": "deep-learning", "weight": 2},
+        {"skill_id": "model-evaluation", "weight": 2},
+        {"skill_id": "deployment", "weight": 2}
+      ]
+    },
+    "data-analyst": {
+      "name": "Data Analyst",
+      "description": "Analyze data and communicate useful insights.",
+      "skills": [
+        {"skill_id": "sql", "weight": 3},
+        {"skill_id": "excel", "weight": 2},
+        {"skill_id": "python", "weight": 2},
+        {"skill_id": "statistics", "weight": 2},
+        {"skill_id": "data-visualization", "weight": 3},
+        {"skill_id": "power-bi", "weight": 2}
+      ]
+    },
+    "backend-developer": {
+      "name": "Backend Developer",
+      "description": "Build server-side applications and APIs.",
+      "skills": [
+        {"skill_id": "python", "weight": 2},
+        {"skill_id": "apis", "weight": 3},
+        {"skill_id": "sql", "weight": 2},
+        {"skill_id": "git", "weight": 1},
+        {"skill_id": "authentication", "weight": 2},
+        {"skill_id": "testing", "weight": 2},
+        {"skill_id": "deployment", "weight": 2}
+      ]
+    }
+  }
+}

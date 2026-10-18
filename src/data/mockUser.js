@@ -1,0 +1,2 @@
+export const initialProfile={name:'Alex Morgan',email:'alex@example.com',degree:'B.Tech',branch:'Computer Science',semester:'5th',skills:['Python','JavaScript'],experience:'Beginner',interests:['Machine Learning','Data Analysis'],careerGoal:'AI/ML Engineer',weeklyHours:6,budget:'Free and paid'};
+export const initialLearning=[{courseId:'py-foundations',progress:65,status:'in-progress',updatedAt:'Today'}];
