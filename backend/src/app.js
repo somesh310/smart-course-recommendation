@@ -16,6 +16,8 @@ import { notFoundMiddleware } from './middleware/notFoundMiddleware.js';
 
 const app = express();
 const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';
+// Render terminates public traffic at its proxy and forwards the client IP.
+app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(helmet());
 app.use(cors({ origin: (origin, callback) => callback(null, !origin || origin === allowedOrigin), credentials: false }));
