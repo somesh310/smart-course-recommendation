@@ -1,22 +1,90 @@
-import nodemailer from 'nodemailer';
+import { randomBytes } from 'node:crypto';
 
-function getMailer() {
-  const { GMAIL_USER: user, GMAIL_APP_PASSWORD: appPassword } = process.env;
-  if (!user || !appPassword) {
-    throw new Error('Gmail email is not configured. Set GMAIL_USER and GMAIL_APP_PASSWORD in backend/.env.');
-  }
-
-  return nodemailer.createTransport({
-    service: 'gmail',
-    auth: { user, pass: appPassword.replace(/\s/g, '') },
-  });
+export function emailIsConfigured() {
+  return Boolean(
+    process.env.GMAIL_USER &&
+    process.env.GOOGLE_OAUTH_CLIENT_ID &&
+    process.env.GOOGLE_OAUTH_CLIENT_SECRET &&
+    process.env.GOOGLE_OAUTH_REFRESH_TOKEN,
+  );
 }
 
-const fromAddress = () => `Pathwise <${process.env.GMAIL_USER}>`;
+async function getAccessToken() {
+  const response = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      client_id: process.env.GOOGLE_OAUTH_CLIENT_ID,
+      client_secret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+      refresh_token: process.env.GOOGLE_OAUTH_REFRESH_TOKEN,
+      grant_type: 'refresh_token',
+    }),
+    signal: AbortSignal.timeout(15000),
+  });
+
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || !payload.access_token) {
+    throw new Error(`Google OAuth token request failed (${response.status}): ${payload.error_description || payload.error || 'No access token returned.'}`);
+  }
+  return payload.access_token;
+}
+
+const base64Lines = (value) => Buffer.from(value, 'utf8').toString('base64').replace(/.{1,76}/g, '$&\r\n').trim();
+const safeHeader = (value) => value.replace(/[\r\n]/g, '');
+
+function makeRawMessage({ to, subject, text, html }) {
+  const boundary = `pathwise_${randomBytes(12).toString('hex')}`;
+  const sender = safeHeader(process.env.GMAIL_USER);
+  const recipient = safeHeader(to);
+  const safeSubject = safeHeader(subject);
+  const mime = [
+    `From: Pathwise <${sender}>`,
+    `To: ${recipient}`,
+    `Subject: ${safeSubject}`,
+    'MIME-Version: 1.0',
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/plain; charset="UTF-8"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    base64Lines(text),
+    `--${boundary}`,
+    'Content-Type: text/html; charset="UTF-8"',
+    'Content-Transfer-Encoding: base64',
+    '',
+    base64Lines(html),
+    `--${boundary}--`,
+    '',
+  ].join('\r\n');
+
+  return Buffer.from(mime, 'utf8').toString('base64url');
+}
+
+async function sendEmail({ to, subject, text, html }) {
+  if (!emailIsConfigured()) {
+    throw new Error('Gmail API is not configured. Set GMAIL_USER and the Google OAuth client and refresh-token variables.');
+  }
+
+  const accessToken = await getAccessToken();
+  const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ raw: makeRawMessage({ to, subject, text, html }) }),
+    signal: AbortSignal.timeout(15000),
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    throw new Error(`Gmail API returned ${response.status}: ${details}`);
+  }
+}
 
 export async function sendPasswordResetEmail({ to, resetUrl }) {
-  await getMailer().sendMail({
-    from: fromAddress(),
+  await sendEmail({
     to,
     subject: 'Reset your Pathwise password',
     text: `We received a request to reset your Pathwise password. Open this link within 15 minutes to choose a new password: ${resetUrl}\n\nIf you did not request this, you can ignore this email.`,
@@ -25,8 +93,7 @@ export async function sendPasswordResetEmail({ to, resetUrl }) {
 }
 
 export async function sendRegistrationOtpEmail({ to, code }) {
-  await getMailer().sendMail({
-    from: fromAddress(),
+  await sendEmail({
     to,
     subject: 'Your Pathwise verification code',
     text: `Your Pathwise verification code is ${code}. It expires in 10 minutes and can be tried up to 5 times. If you did not request this, you can ignore this email.`,

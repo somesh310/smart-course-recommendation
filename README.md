@@ -70,11 +70,13 @@ Backend `backend/.env.example`:
 - `ML_SERVICE_URL`: FastAPI base URL, default in the example is `http://127.0.0.1:8000`
 - `ML_SERVICE_TIMEOUT_MS`: request timeout in milliseconds, default 5000
 - `GMAIL_USER`: Gmail address used by the backend to send verification and reset emails
-- `GMAIL_APP_PASSWORD`: Google App Password for that Gmail account (not the account's normal password)
+- `GOOGLE_OAUTH_CLIENT_ID`: OAuth client ID for the Google Cloud project with Gmail API enabled
+- `GOOGLE_OAUTH_CLIENT_SECRET`: secret for that OAuth client
+- `GOOGLE_OAUTH_REFRESH_TOKEN`: offline OAuth refresh token granted by the sending Gmail account with `gmail.send` scope
 
 Vite variables are public build-time configuration. Never put database credentials, JWT secrets, or model credentials in frontend variables.
 
-Registration sends a 6-digit email verification code through Gmail SMTP. Codes expire after 10 minutes, have a five-attempt limit, and can be resent with rate limits. Pending signup passwords are bcrypt-hashed; OTPs are stored as keyed hashes. Password recovery also uses Gmail. Turn on 2-Step Verification for the sending Google Account, create an App Password, then add `GMAIL_USER` and `GMAIL_APP_PASSWORD` to `backend/.env`. Google only offers App Passwords on eligible accounts with 2-Step Verification enabled. The reset UI is available at **Log in → Forgot password?** for students and admins. Without these server-side settings, email signup and password recovery report that email delivery is not configured; no verification codes or reset tokens are returned to the browser. Admin recovery without email can be performed by setting a new `SEED_ADMIN_PASSWORD` and running `npm run backend:admin`.
+Registration and password recovery send mail through the Gmail API over HTTPS. Codes expire after 10 minutes, have a five-attempt limit, and can be resent with rate limits. Pending signup passwords are bcrypt-hashed; OTPs are stored as keyed hashes. Enable the Gmail API in a Google Cloud project, configure an OAuth consent screen and OAuth client, and grant the sender account the `https://www.googleapis.com/auth/gmail.send` scope with offline access. Set `GMAIL_USER`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, and `GOOGLE_OAUTH_REFRESH_TOKEN` in the backend environment. Do not expose OAuth credentials in frontend variables or commit them. Google OAuth apps left in Testing issue Gmail-scoped refresh tokens that expire after 7 days; a durable public setup requires completing Google's OAuth app publishing and verification requirements. The reset UI is available at **Log in → Forgot password?** for students and admins. Without these server-side settings, email signup and password recovery report that email delivery is not configured; no verification codes or reset tokens are returned to the browser. Admin recovery without email can be performed by setting a new `SEED_ADMIN_PASSWORD` and running `npm run backend:admin`.
 
 ## Main folders
 
