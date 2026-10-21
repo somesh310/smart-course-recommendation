@@ -6,10 +6,11 @@ import PendingRegistration from '../models/PendingRegistration.js';
 import ApiError from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { generateToken } from '../utils/generateToken.js';
-import { emailIsConfigured, sendPasswordResetEmail, sendRegistrationOtpEmail } from '../services/emailService.js';
+import { sendPasswordResetEmail, sendRegistrationOtpEmail } from '../services/emailService.js';
 
 const userPayload = (user) => user.toJSON();
 const hashRegistrationOtp = (code) => createHmac('sha256', process.env.JWT_SECRET).update(code).digest('hex');
+const emailIsConfigured = () => Boolean(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD);
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
   if (await User.exists({ email })) throw new ApiError(409, 'An account with this email already exists.');

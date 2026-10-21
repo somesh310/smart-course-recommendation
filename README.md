@@ -71,12 +71,10 @@ Backend `backend/.env.example`:
 - `ML_SERVICE_TIMEOUT_MS`: request timeout in milliseconds, default 5000
 - `GMAIL_USER`: Gmail address used by the backend to send verification and reset emails
 - `GMAIL_APP_PASSWORD`: Google App Password for that Gmail account (not the account's normal password)
-- `RESEND_API_KEY`: optional Resend API key; use this instead of Gmail SMTP on hosts that block SMTP
-- `EMAIL_FROM`: verified sender, for example `Pathwise <no-reply@example.com>`; required with `RESEND_API_KEY`
 
 Vite variables are public build-time configuration. Never put database credentials, JWT secrets, or model credentials in frontend variables.
 
-Registration sends a 6-digit email verification code. Codes expire after 10 minutes, have a five-attempt limit, and can be resent with rate limits. Pending signup passwords are bcrypt-hashed; OTPs are stored as keyed hashes. Password recovery also uses email. Configure either Gmail SMTP with `GMAIL_USER` and `GMAIL_APP_PASSWORD`, or Resend with `RESEND_API_KEY` and a verified `EMAIL_FROM` sender. Resend uses HTTPS, which works on hosts that block SMTP ports. The reset UI is available at **Log in → Forgot password?** for students and admins. Without email settings, signup and password recovery report that email delivery is not configured; no verification codes or reset tokens are returned to the browser. Admin recovery without email can be performed by setting a new `SEED_ADMIN_PASSWORD` and running `npm run backend:admin`.
+Registration sends a 6-digit email verification code through Gmail SMTP. Codes expire after 10 minutes, have a five-attempt limit, and can be resent with rate limits. Pending signup passwords are bcrypt-hashed; OTPs are stored as keyed hashes. Password recovery also uses Gmail. Turn on 2-Step Verification for the sending Google Account, create an App Password, then add `GMAIL_USER` and `GMAIL_APP_PASSWORD` to `backend/.env`. Google only offers App Passwords on eligible accounts with 2-Step Verification enabled. The reset UI is available at **Log in → Forgot password?** for students and admins. Without these server-side settings, email signup and password recovery report that email delivery is not configured; no verification codes or reset tokens are returned to the browser. Admin recovery without email can be performed by setting a new `SEED_ADMIN_PASSWORD` and running `npm run backend:admin`.
 
 ## Main folders
 
